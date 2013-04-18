@@ -1,0 +1,25 @@
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+
+pids
+logs
+results
+
+# Project specific stuff
+.idea
+npm-debug.log
+node_modules
+
+# Ignore compiled coffeescript
+src/*.js
+util/*.js
+
+# Ignore all configs except the default
+src/config/*.json
+!src/config/default.json

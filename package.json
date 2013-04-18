@@ -1,0 +1,19 @@
+{
+    "name": "watchocrweb",
+    "description": "Web API for WatchOCR",
+    "version": "0.0.1",
+    "private": true,
+    "author": {
+        "name": "Luke Andersen-Quest",
+        "email": "luke.andersen.quest@gmail.com"
+    },
+    "dependencies": {
+        "coffee-script": "1.6.2",
+        "config": "0.4.x",
+        "express": "3.1.0"
+    },
+    "devDependencies": {
+        "uglify-js": "2.2.x",
+        "vows": "0.7.x"
+    }
+}

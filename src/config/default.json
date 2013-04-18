@@ -1,0 +1,13 @@
+{
+    "app": {
+        "path": "."
+    },
+
+    "web": {
+        "port": 54321
+    },
+
+    "ocr": {
+        "monitorPath": "../watch"
+    }
+}
