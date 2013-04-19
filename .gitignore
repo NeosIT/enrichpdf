@@ -13,12 +13,17 @@ results
 
 # Project specific stuff
 .idea
+build
 npm-debug.log
 node_modules
 
 # Ignore compiled coffeescript
 src/*.js
+src/*/*.js
 util/*.js
+
+# Ignore compiled stylus
+src/web/theme/*.css
 
 # Ignore all configs except the default
 src/config/*.json

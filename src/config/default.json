@@ -8,6 +8,12 @@
     },
 
     "ocr": {
-        "monitorPath": "../watch"
+        "path": "c:\\users\\laq\\watchocr"
+    },
+
+    "mongo": {
+        "host": "127.0.0.1",
+        "port": "27017",
+        "db": "watchocrweb"
     }
 }
