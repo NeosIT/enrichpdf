@@ -8,7 +8,15 @@
     },
 
     "ocr": {
-        "path": "c:\\users\\laq\\watchocr"
+        "watchPath": "../../watch",
+        "outPath": "../../out",
+        "debug": true,
+        "pdfinfo": {
+            "command": "../util/mock/pdfinfo.bat"
+        },
+        "img2pdf": {
+            "command": "../util/mock/img2pdf.bat"
+        }
     },
 
     "mongo": {

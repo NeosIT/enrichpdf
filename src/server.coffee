@@ -13,6 +13,9 @@ MongoDB = require("mongodb").Db
 nib = require "nib"
 stylus = require "stylus"
 
+# Own modules
+WatchOCR = require "./lib/WatchOCR"
+
 # Server class
 class Server
   constructor: ->
@@ -20,6 +23,7 @@ class Server
     @app = express()
     @db = null
     @fsx = require "./lib/filehelpers"
+    @outPath = path.resolve cfg.ocr.outPath
 
     # Paths
     cfg.app.path = __dirname
@@ -51,16 +55,17 @@ class Server
     @app.post "/job", @routes.createJob.bind(this)
 
     # Setup directory watcher
-    @watcher = chokidar.watch cfg.ocr.path,
+    @watcher = chokidar.watch cfg.ocr.watchPath,
       ignoreInitial: true
       persistent: true
     @watcher.on "add", (filepath) ->
       console.log "File added: ", filepath
+      wocr = new WatchOCR(this, path.resolve(filepath), cfg.ocr)
     @watcher.on "change", (filepath) ->
       console.log "File changed: ", filepath
     @watcher.on "unlink", (filepath) ->
       console.log "File removed: ", filepath
-    console.log "Watching path: " + path.resolve cfg.ocr.path
+    console.log "Watching path: " + path.resolve cfg.ocr.watchPath
 
     # Run
     MongoDB.connect format("mongodb://%s:%s/%s?w=1", cfg.mongo.host, cfg.mongo.port, cfg.mongo.db), (err, db) =>
@@ -68,7 +73,7 @@ class Server
         @db = db.collection "watchocrweb"
         console.log "Connected to database."
         @app.listen @app.get("port"), =>
-          console.log "Webserver listening on port " + @app.get("port") + "."
+          console.log "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
       else
         console.log err
 
