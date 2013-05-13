@@ -8,15 +8,18 @@
     },
 
     "ocr": {
-        "watchPath": "../../watch",
-        "outPath": "../../out",
         "debug": true,
-        "pdfinfo": {
-            "command": "../util/mock/pdfinfo.bat"
-        },
-        "img2pdf": {
-            "command": "../util/mock/img2pdf.bat"
-        }
+        "outPath": "../../out",
+        "watchPaths": [
+            {
+                "in": "../../watch",
+                "out": "../../out"
+            },
+            {
+                "in": "../../watch2",
+                "out": "../../out"
+            }
+        ]
     },
 
     "mongo": {

@@ -14,13 +14,16 @@ results
 # Project specific stuff
 .idea
 build
+docs
 npm-debug.log
 node_modules
 
 # Ignore compiled coffeescript
 src/*.js
+src/test.coffee
 src/*/*.js
 util/*.js
+util/*/*.js
 
 # Ignore compiled stylus
 src/web/theme/*.css

@@ -1,4 +1,4 @@
-# Initialize
+# Set the current working directory.
 process.chdir __dirname
 
 # Require built-in modules
@@ -13,10 +13,11 @@ MongoDB = require("mongodb").Db
 nib = require "nib"
 stylus = require "stylus"
 
-# Own modules
+# Require own modules
 WatchOCR = require "./lib/WatchOCR"
+tus = require "connect-tus"
 
-# Server class
+# Server class definition.
 class Server
   constructor: ->
     # Initialize
@@ -24,6 +25,7 @@ class Server
     @db = null
     @fsx = require "./lib/filehelpers"
     @outPath = path.resolve cfg.ocr.outPath
+    @cfg = cfg
 
     # Paths
     cfg.app.path = __dirname
@@ -37,6 +39,7 @@ class Server
       @app.set "view engine", "jade"
       @app.use express.bodyParser()
       @app.use express.methodOverride()
+      # @app.use tus()
       @app.use stylus.middleware(src: @webRoot, compile:@compileStylus)
 
     # Dev config
@@ -53,21 +56,22 @@ class Server
     @app.get "/jobs", @routes.jobs.bind(this)
     @app.get "/test", @routes.test.bind(this)
     @app.post "/job", @routes.createJob.bind(this)
+    @app.patch "/job", (request, response) =>
+      console.log "Patch!"
+      response.end ""
+    @app.head "/job", (request, response) =>
+      console.log "Head!"
+      response.end ""
 
-    # Setup directory watcher
-    @watcher = chokidar.watch cfg.ocr.watchPath,
-      ignoreInitial: true
-      persistent: true
-    @watcher.on "add", (filepath) ->
-      console.log "File added: ", filepath
-      wocr = new WatchOCR(this, path.resolve(filepath), cfg.ocr)
-    @watcher.on "change", (filepath) ->
-      console.log "File changed: ", filepath
-    @watcher.on "unlink", (filepath) ->
-      console.log "File removed: ", filepath
-    console.log "Watching path: " + path.resolve cfg.ocr.watchPath
+    # Setup directory watchers
+    cfg.ocr.watchPaths.forEach (wpath) =>
+      watcher = chokidar.watch wpath.in, persistent: true
+      watcher.on "add", (filepath) =>
+        console.log "File added: ", filepath
+        new WatchOCR(@, path.resolve(filepath), wpath)
+      console.log "Watching path: " + path.resolve wpath.in
 
-    # Run
+    # Connect to MongoDB and start the web server
     MongoDB.connect format("mongodb://%s:%s/%s?w=1", cfg.mongo.host, cfg.mongo.port, cfg.mongo.db), (err, db) =>
       if !err
         @db = db.collection "watchocrweb"
