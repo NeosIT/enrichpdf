@@ -1,3 +1,3 @@
-## WatchOCR Web-API
+## Enrich Web-API
 
-A Web-API for WatchOCR.
+A Web-API for EnrichPDF.

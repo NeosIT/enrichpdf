@@ -14,7 +14,7 @@ nib = require "nib"
 stylus = require "stylus"
 
 # Require own modules
-WatchOCR = require "./lib/WatchOCR"
+Enrich = require "./lib/Enrich"
 tus = require "connect-tus"
 
 # Server class definition.
@@ -68,7 +68,7 @@ class Server
       watcher = chokidar.watch wpath.in, persistent: true
       watcher.on "add", (filepath) =>
         console.log "File added: ", filepath
-        new WatchOCR(@, path.resolve(filepath), wpath)
+        new Enrich(@, path.resolve(filepath), wpath)
       console.log "Watching path: " + path.resolve wpath.in
 
     # Connect to MongoDB and start the web server

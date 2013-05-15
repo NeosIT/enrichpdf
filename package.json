@@ -1,6 +1,6 @@
 {
-    "name": "watchocrweb",
-    "description": "Web API for WatchOCR",
+    "name": "enrichpdf",
+    "description": "Web API for EnrichPDF",
     "version": "0.0.1",
     "private": true,
     "author": {
@@ -10,9 +10,9 @@
     "dependencies": {
         "chokidar": "0.6.x",
         "config": "0.4.x",
+        "pdf2pdf": "git://git.neos-it.local/enrichpdf/pdf2pdf.git",
         "express": "3.1.0",
         "jade": "0.28.x",
-        "mongodb": "1.2.x",
         "nib": "0.9.x",
         "stylus": "0.32.x"
     },
