@@ -9,7 +9,6 @@
 
     "ocr": {
         "debug": true,
-        "outPath": "../../out",
         "watchPaths": [
             {
                 "in": "../../watch",
