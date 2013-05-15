@@ -22,7 +22,6 @@ class Server
   constructor: ->
     # Initialize
     @app = express()
-    @db = null
     @fsx = require "./lib/filehelpers"
     @outPath = path.resolve cfg.ocr.outPath
     @cfg = cfg
@@ -71,15 +70,9 @@ class Server
         new Enrich(@, path.resolve(filepath), wpath)
       console.log "Watching path: " + path.resolve wpath.in
 
-    # Connect to MongoDB and start the web server
-    MongoDB.connect format("mongodb://%s:%s/%s?w=1", cfg.mongo.host, cfg.mongo.port, cfg.mongo.db), (err, db) =>
-      if !err
-        @db = db.collection "watchocrweb"
-        console.log "Connected to database."
-        @app.listen @app.get("port"), =>
-          console.log "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
-      else
-        console.log err
+    # Start the web server.
+    @app.listen @app.get("port"), =>
+      console.log "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
 
   # Compile stylus with nib
   compileStylus: (str, path) ->
