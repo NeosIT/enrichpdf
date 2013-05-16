@@ -23,6 +23,7 @@ src/procs
 src/*.js
 src/test.coffee
 src/*/*.js
+src/web/js/*.js
 util/*.js
 util/*/*.js
 

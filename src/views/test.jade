@@ -1,6 +1,12 @@
 extends layout
 
 block content
-    form(action="/job", method="POST", enctype="multipart/form-data")
+    script(src="/js/test.js")
+    h2 Upload
+    form(id="testForm", action="/job", method="POST", enctype="multipart/form-data")
         input(type="file", name="filepdf")
-        input(type="submit", value="send")
+        button(type="button", onclick="send()") Send
+    h2 Info
+    span ID:
+    input(id="reqID", type="text", value="")
+    button(type="button", onclick="getInfo()") Info
