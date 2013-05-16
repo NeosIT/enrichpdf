@@ -23,11 +23,12 @@ class Server
     # Initialize
     @app = express()
     @fsx = require "./lib/filehelpers"
-    @outPath = path.resolve cfg.ocr.outPath
     @cfg = cfg
+    @procs = {}
 
     # Paths
-    cfg.app.path = __dirname
+    if !cfg.app.path
+      cfg.app.path = __dirname
     @viewsPath = path.join cfg.app.path, "views"
     @webRoot = path.join cfg.app.path, "web"
 
@@ -55,19 +56,15 @@ class Server
     @app.get "/jobs", @routes.jobs.bind(this)
     @app.get "/test", @routes.test.bind(this)
     @app.post "/job", @routes.createJob.bind(this)
-    @app.patch "/job", (request, response) =>
-      console.log "Patch!"
-      response.end ""
-    @app.head "/job", (request, response) =>
-      console.log "Head!"
-      response.end ""
+    @app.get "/job", @routes.getJob.bind(this)
 
     # Setup directory watchers
     cfg.ocr.watchPaths.forEach (wpath) =>
       watcher = chokidar.watch wpath.in, persistent: true
       watcher.on "add", (filepath) =>
-        console.log "File added: ", filepath
-        new Enrich(@, path.resolve(filepath), wpath)
+        if path.extname(filepath) == ".pdf"
+          console.log "File added: ", filepath
+          @createProcess filepath, path.join(wpath.out, path.basename(filepath))
       console.log "Watching path: " + path.resolve wpath.in
 
     # Start the web server.
@@ -77,6 +74,18 @@ class Server
   # Compile stylus with nib
   compileStylus: (str, path) ->
     stylus(str).set("filename", path).use(nib())["import"]("nib")
+
+
+  # Create a new process
+  createProcess: (fin, fout) ->
+    pid = Enrich.generateUniqueID()
+    fout = path.join(process.env["TMP"], pid + ".pdf") unless fout
+    (new Enrich(@, pid, path.resolve(fin), path.resolve(fout))).save().convert()
+
+
+  # Get process by ID
+  getProc: (eid, callback) ->
+    (new Enrich(@, eid)).load(callback)
 
 
 new Server()
