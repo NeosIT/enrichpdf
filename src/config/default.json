@@ -1,6 +1,6 @@
 {
     "app": {
-        "path": "."
+        "path": ""
     },
 
     "web": {
@@ -8,6 +8,7 @@
     },
 
     "ocr": {
+        "store": "./procs",
         "debug": true,
         "watchPaths": [
             {
@@ -19,11 +20,5 @@
                 "out": "../../out"
             }
         ]
-    },
-
-    "mongo": {
-        "host": "127.0.0.1",
-        "port": "27017",
-        "db": "watchocrweb"
     }
 }
