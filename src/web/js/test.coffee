@@ -1,7 +1,7 @@
 
 @send = ->
   console.log "Submit!"
-  $("#testForm").ajaxSubmit()
+  $("#testForm").ajaxSubmit({})
 
 @getInfo = ->
   console.log document.getElementById("reqID").value
