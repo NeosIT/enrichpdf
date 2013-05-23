@@ -9,13 +9,11 @@ format = require("util").format
 cfg = require "config"
 chokidar = require "chokidar"
 express = require "express"
-MongoDB = require("mongodb").Db
 nib = require "nib"
 stylus = require "stylus"
 
 # Require own modules
 Enrich = require "./lib/Enrich"
-tus = require "connect-tus"
 
 # Server class definition.
 class Server
