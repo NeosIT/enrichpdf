@@ -1,12 +1,17 @@
 
 @send = ->
   console.log "Submit!"
-  $("#testForm").ajaxSubmit({})
+  $("#testForm").ajaxSubmit (x,y,z) ->
+    console.log x, y, z
 
 @getInfo = ->
-  console.log document.getElementById("reqID").value
   $.ajax
-    url: "/job"
+    url: "/job/" + document.getElementById("reqID").value
+    data: ""
+
+@getPdf = ->
+  $.ajax
+    url: "/job/" + document.getElementById("reqID").value
     data: ""
     beforeSend: (xhr) ->
-      xhr.setRequestHeader "Entity-ID", document.getElementById("reqID").value
+      xhr.setRequestHeader "Accept", "application/pdf"

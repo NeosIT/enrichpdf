@@ -1,20 +1,35 @@
+fs = require "fs"
+
+
+getIdFromPath = new RegExp "/job/(\\w+)"
+
+acceptPdf = (req) ->
+  acc = req.get "Accept"
+  if acc && acc.indexOf("application/pdf") > -1
+    return true
+  return false
+
 
 
 module.exports = (request, response) ->
-  if !request.get "Entity-ID"
-    response.writeHead 400
-    response.end()
-  else
-    eid = request.get "Entity-ID"
-    @getProc eid, (err, ep) ->
-      console.log err, ep
+  jid = getIdFromPath.exec request.path
+
+  # If Job ID is given, look for it. Otherwise
+  if jid
+    jobId = jid[1]
+    @getProc jobId, (err, ep) ->
       if err
         response.writeHead 404
         response.end()
       else
-        if ep.Done
-          response.writeHead 200
-          response.end()
+        console.log ep
+        if ep.Done && acceptPdf(request)
+          response.set "Content-Type", "application/pdf"
+          fstr = fs.createReadStream(ep.OutPath)
+          fstr.pipe(response)
         else
-          response.writeHead 204
-          response.end()
+          response.set "Content-Type", "application/json"
+          response.end(ep.serialize())
+  else
+    response.writeHead 404
+    response.end()

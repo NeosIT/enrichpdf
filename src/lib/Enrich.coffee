@@ -28,14 +28,13 @@ class Enrich
       @Error = err
     else
       @Done = true
-      console.log "Done!"
+      @Status = "Complete."
     @save()
 
 
   # Callback whenever conversion process advances.
   processCallback: (stat) ->
     @Status = stat
-    console.log "Proc: " + stat
     @save()
 
 
@@ -47,20 +46,17 @@ class Enrich
   load: (callback) ->
     if @ID && typeof callback == "function"
       fpath = path.join(@App.cfg.ocr.store, @ID) + ".json"
-      fs.exists fpath, (ex) ->
+      fs.exists fpath, (ex) =>
         return callback(new Error("Does not exist!"), null) unless ex
-        fs.readFile fpath, encoding:"utf8", (err, dta) ->
+        fs.readFile fpath, encoding:"utf8", (err, dta) =>
           if err
             return callback(err, null)
-          try
-            pdat = JSON.parse dta
-            @Status = pdat.status
-            @Done = pdat.done
-            @FilePath = pdat.original
-            @OutPath = pdat.converted
-            return callback(null, @)
-          catch e
-            return callback(new Error("Error parsing JSON!"), null)
+          pdat = JSON.parse dta
+          @Status = pdat.status
+          @Done = pdat.done
+          @FilePath = pdat.original
+          @OutPath = pdat.converted
+          return callback(null, @)
 
 
   # Return a JSON serialized version of this object.

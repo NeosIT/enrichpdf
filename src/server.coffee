@@ -55,6 +55,7 @@ class Server
     @app.get "/test", @routes.test.bind(this)
     @app.post "/job", @routes.createJob.bind(this)
     @app.get "/job", @routes.getJob.bind(this)
+    @app.get "/job/*", @routes.getJob.bind(this)
 
     # Setup directory watchers
     cfg.ocr.watchPaths.forEach (wpath) =>
