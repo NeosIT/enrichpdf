@@ -20,5 +20,13 @@
                 "out": "../../out"
             }
         ]
+    },
+
+    "email": {
+        "host": "ex1.neos-it.local",
+        "domain": "NEOS-IT",
+        "user": "",
+        "password": "",
+        "tls": true
     }
 }

@@ -8,6 +8,7 @@ format = require("util").format
 # Require 3rd party modules
 cfg = require "config"
 chokidar = require "chokidar"
+email = require "emailjs"
 express = require "express"
 nib = require "nib"
 stylus = require "stylus"
@@ -66,9 +67,13 @@ class Server
           @createProcess filepath, path.join(wpath.out, path.basename(filepath))
       console.log "Watching path: " + path.resolve wpath.in
 
+    # Setup e-mail
+    @email = email.server.connect cfg.email
+
     # Start the web server.
     @app.listen @app.get("port"), =>
       console.log "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
+
 
   # Compile stylus with nib
   compileStylus: (str, path) ->
@@ -85,6 +90,11 @@ class Server
   # Get process by ID
   getProc: (eid, callback) ->
     (new Enrich(@, eid)).load(callback)
+
+
+  # Send an email
+  sendMail: (options, callback) ->
+    @email.send options, callback
 
 
 new Server()

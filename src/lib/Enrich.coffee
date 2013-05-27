@@ -30,6 +30,20 @@ class Enrich
       @Done = true
       @Status = "Complete."
     @save()
+    # Send eMail
+    @App.sendMail
+      from: "laq@neos-it.de"
+      to: "laq@neos-it.de"
+      subject: "Success e-mail baby yeah!"
+      text: "This is the successfully converted PDF."
+      attachment: [
+        path: @OutPath
+        type: "application/pdf"
+        name: "converted.pdf"
+      ]
+    , (err, msg) ->
+      console.log err
+      console.log msg
 
 
   # Callback whenever conversion process advances.
