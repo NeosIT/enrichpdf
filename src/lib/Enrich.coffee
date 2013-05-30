@@ -1,8 +1,7 @@
 fs = require "fs"
-fork = require('child_process').fork
-spawn = require('child_process').spawn
 pdf2pdf = require "pdf2pdf"
 path = require "path"
+
 
 class Enrich
   constructor: (@App, @ID, @FilePath, @OutPath) ->
@@ -31,6 +30,13 @@ class Enrich
       @Status = "Complete."
     @save()
     # Send eMail
+    # TODO: Only send e-mail if recipient(s) given.
+    setTimeout(@sendMail.bind(this), 3000)
+
+
+  # Send email with attachment
+  sendMail: ->
+    # TODO: Implement recursive check for file presence before sending.
     @App.sendMail
       from: "laq@neos-it.de"
       to: "laq@neos-it.de"

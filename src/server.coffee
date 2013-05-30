@@ -8,7 +8,7 @@ format = require("util").format
 # Require 3rd party modules
 cfg = require "config"
 chokidar = require "chokidar"
-email = require "emailjs"
+email = require "simplemail"
 express = require "express"
 nib = require "nib"
 stylus = require "stylus"
@@ -68,7 +68,9 @@ class Server
       console.log "Watching path: " + path.resolve wpath.in
 
     # Setup e-mail
-    @email = email.server.connect cfg.email
+    @email.smtp
+      host: cfg.email.host
+      port: cfg.email.port
 
     # Start the web server.
     @app.listen @app.get("port"), =>
