@@ -3,6 +3,10 @@
         "path": ""
     },
 
+    "logging": {
+        "dirname": "./logs"
+    },
+
     "web": {
         "port": 54321
     },

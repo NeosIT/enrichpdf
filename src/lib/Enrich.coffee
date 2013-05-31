@@ -13,6 +13,7 @@ class Enrich
 
   # Initiate conversion
   convert: ->
+    @App.info "Enrich: Init PDF2PDF."
     pdf2pdf.run
       infile: @FilePath
       outfile: @OutPath
@@ -25,6 +26,7 @@ class Enrich
   fileConverted: (err) ->
     if err
       @Error = err
+      @App.log "error", err.message, if err.stack then callstack:err.stack else null
     else
       @Done = true
       @Status = "Complete."
@@ -48,12 +50,13 @@ class Enrich
         name: "converted.pdf"
       ]
     , (err, msg) ->
-      console.log err
-      console.log msg
+      if err
+        @App.log "error", err.message, if err.stack then callstack:err.stack else null
 
 
   # Callback whenever conversion process advances.
   processCallback: (stat) ->
+    @App.info "Enrich process #" + @ID + " status: " + stat
     @Status = stat
     @save()
 

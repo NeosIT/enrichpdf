@@ -22,7 +22,6 @@ module.exports = (request, response) ->
         response.writeHead 404
         response.end()
       else
-        console.log ep
         if ep.Done && acceptPdf(request)
           response.set "Content-Type", "application/pdf"
           fstr = fs.createReadStream(ep.OutPath)

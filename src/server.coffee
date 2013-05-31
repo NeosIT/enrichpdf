@@ -8,7 +8,6 @@ format = require("util").format
 # Require 3rd party modules
 cfg = require "config"
 chokidar = require "chokidar"
-email = require "simplemail"
 express = require "express"
 nib = require "nib"
 stylus = require "stylus"
@@ -22,6 +21,11 @@ class Server
     # Initialize
     @app = express()
     @fsx = require "./lib/filehelpers"
+    @email = require "simplemail"
+    @logger = require "winston"
+    @logger.add @logger.transports.DailyRotateFile,
+      cfg.logging
+    @info "EnrichPDF starting up..."
     @cfg = cfg
     @procs = {}
 
@@ -30,6 +34,10 @@ class Server
       cfg.app.path = __dirname
     @viewsPath = path.join cfg.app.path, "views"
     @webRoot = path.join cfg.app.path, "web"
+
+    # Configure e-mail
+    @email.smtp(cfg.email)
+    @email.logger(@logger)
 
     # Basic config
     @app.configure =>
@@ -63,9 +71,9 @@ class Server
       watcher = chokidar.watch wpath.in, persistent: true
       watcher.on "add", (filepath) =>
         if path.extname(filepath) == ".pdf"
-          console.log "File added: ", filepath
+          @info "File added: " + filepath
           @createProcess filepath, path.join(wpath.out, path.basename(filepath))
-      console.log "Watching path: " + path.resolve wpath.in
+      @info "Watching path: " + path.resolve wpath.in
 
     # Setup e-mail
     @email.smtp
@@ -74,7 +82,7 @@ class Server
 
     # Start the web server.
     @app.listen @app.get("port"), =>
-      console.log "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
+      @info "Webserver listening in " + @app.settings.env + " mode on port " + @app.get("port") + "."
 
 
   # Compile stylus with nib
@@ -97,6 +105,20 @@ class Server
   # Send an email
   sendMail: (options, callback) ->
     @email.send options, callback
+
+
+  # Log helper function
+  log: (level, msg, meta) ->
+    if @logger && @logger.log
+      if meta
+        @logger.log level, msg, meta
+      else
+        @logger.log level, msg
+
+
+  # Info log helper
+  info: (msg) ->
+    @log "info", msg
 
 
 new Server()

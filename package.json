@@ -11,11 +11,12 @@
         "chokidar": "0.6.x",
         "config": "0.4.x",
         "pdf2pdf": "git://git.neos-it.local/enrichpdf/pdf2pdf.git",
-        "emailjs": "*",
         "express": "3.1.0",
         "jade": "0.28.x",
         "nib": "0.9.x",
-        "stylus": "0.32.x"
+        "simplemail": "git://git.neos-it.local/enrichpdf/simplemail.git",
+        "stylus": "0.32.x",
+        "winston": "*"
     },
     "devDependencies": {
         "coffee-script": "1.6.x",
