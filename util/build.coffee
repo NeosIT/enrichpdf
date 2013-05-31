@@ -25,6 +25,8 @@ compile = (srcfile) ->
 console.log "Clearing build directory..."
 fsx.mkdirp "../build"
 fsx.clearDir "../build"
+fsx.mkdirp "../build/logs"
+fsx.mkdirp "../build/procs"
 
 # Build the project
 console.log "Building..."
