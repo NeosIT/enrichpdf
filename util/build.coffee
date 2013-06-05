@@ -17,7 +17,7 @@ fsx = require "../src/lib/filehelpers"
 compile = (srcfile) ->
   fi = fsx.fileInfo(srcfile)
   if fi.fileext == ".coffee"
-    fsx.mkdirp fi.targetfullpath
+    fsx.mkdirp fi.targetfullpath, 0o777
     fs.writeFileSync(fi.targetpath, uglify(coffee(fs.readFileSync(srcfile, "UTF-8")), (fromString: true)).code)
 
 
