@@ -41,7 +41,7 @@ class Enrich
       from: "laq@neos-it.de"
       to: "laq@neos-it.de"
       subject: "Success e-mail baby yeah!"
-      text: "This is the successfully converted PDF."
+      body: "This is the successfully converted PDF."
       attachment: [
         path: @OutPath
         type: "application/pdf"
