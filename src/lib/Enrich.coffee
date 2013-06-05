@@ -50,19 +50,21 @@ class Enrich
 
   # Send email with attachment
   sendMail: ->
-    @App.sendMail
-      from: "laq@neos-it.de"
-      to: "laq@neos-it.de"
-      subject: "Success e-mail baby yeah!"
-      body: "This is the successfully converted PDF."
-      attachment: [
-        path: @OutPath
-        type: "application/pdf"
-        name: "converted.pdf"
-      ]
-    , (err, msg) ->
-      if err
-        @App.log "error", err.message, if err.stack then callstack:err.stack else null
+    for recip in @MailRecipients
+      if /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i.test recip
+        @App.sendMail
+          from: "laq@neos-it.de"
+          to: recip
+          subject: "Success e-mail baby yeah!"
+          body: "This is the successfully converted PDF."
+          attachment: [
+            path: @OutPath
+            type: "application/pdf"
+            name: "converted.pdf"
+          ]
+        , (err, msg) =>
+          if err
+            @App.log "error", err.message, if err.stack then callstack:err.stack else null
 
 
   # Callback whenever conversion process advances.
