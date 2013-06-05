@@ -1,7 +1,22 @@
 fs = require "fs"
 
-checkEOF = (fn, callback) ->
-  fd = fs.open
+checkEOF = (fn, len, callback) ->
+  process.nextTick ->
+    try
+      fd = fs.openSync fn, "r"
+      buf = new Buffer(10)
+      fs.readSync fd, buf, 0, 10, len-10
+      if buf.toString().match(/%%EOF/)
+        callback true
+      else
+        callback false
+    catch err
+      callback false
+    finally
+      if fd
+        fs.closeSync fd
+      return
+
 
 # Watch a pdf file until it is finished growing.
 module.exports = (opts, cbf) ->
@@ -55,24 +70,22 @@ module.exports = (opts, cbf) ->
             callback err
             return
           if stats.size > lastSize
-            console.log "File grown: +" + (stats.size - lastSize) + " bytes"
             lastSize = stats.size
             checkTimeout = Date.now() + (opts.timeout * 1000)
 
           # If file is large enough, check for EOF
           if stats.size > 10
-            checkEOF opts.file, (isEOF) ->
-              "do something"
+            checkEOF opts.file, stats.size, (isEOF) ->
+              if isEOF
+                callback()
+                return
+              else
+                setTimeout(checkFile, opts.checkstep * 1000)
           else
             setTimeout(checkFile, opts.checkstep * 1000)
-            return
-
-
-
-
       else
         setTimeout(checkFile, opts.checkstep * 1000)
-        return
+    return
 
 
     #if ctd >= 0

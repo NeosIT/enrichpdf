@@ -1,6 +1,7 @@
 fs = require "fs"
 pdf2pdf = require "pdf2pdf"
 path = require "path"
+growingpdf = require "./growingpdf"
 
 
 class Enrich
@@ -9,16 +10,26 @@ class Enrich
     @Status = "Init"
     @Done = false
     @Error = false
+    @MailRecipients = []
 
 
   # Initiate conversion
   convert: ->
-    @App.info "Enrich: Init PDF2PDF."
-    pdf2pdf.run
-      infile: @FilePath
-      outfile: @OutPath
-      cb_status: @processCallback.bind(this)
-    , @fileConverted.bind(this)
+    @Status = "Waiting for PDF."
+    @save()
+    growingpdf @FilePath, (err) =>
+      if err
+        @Status = err.message
+        @save()
+        return
+      @Status = "Beginning conversion."
+      @save()
+      @App.info "Enrich: Init PDF2PDF."
+      pdf2pdf.run
+        infile: @FilePath
+        outfile: @OutPath
+        cb_status: @processCallback.bind(this)
+      , @fileConverted.bind(this)
     @
 
 
@@ -31,14 +42,14 @@ class Enrich
       @Done = true
       @Status = "Complete."
     @save()
+
     # Send eMail
-    # TODO: Only send e-mail if recipient(s) given.
-    setTimeout(@sendMail.bind(this), 3000)
+    if @MailRecipients.length > 0
+      growingpdf @OutPath, @sendMail.bind(this)
 
 
   # Send email with attachment
   sendMail: ->
-    # TODO: Implement recursive check for file presence before sending.
     @App.sendMail
       from: "laq@neos-it.de"
       to: "laq@neos-it.de"
