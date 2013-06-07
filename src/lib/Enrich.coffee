@@ -13,6 +13,7 @@ class Enrich
     @Error = false
     @Continue = true
     @MailRecipients = []
+    @OutPath = @OutPath || path.resolve(path.join(@App.cfg.ocr.store, @ID, "converted.pdf"))
 
 
   # Initiate conversion
@@ -20,22 +21,26 @@ class Enrich
     @Status = "Waiting for PDF."
     @save()
     growingpdf @FilePath, (err) =>
-      # Move original PDF to proc location
-
-
-      # TODO: Send e-mail that process is beginning.
       if err
         @Status = err.message
         @save()
         return
-      @Status = "Beginning conversion."
-      @save()
-      @App.info "Enrich: Init PDF2PDF."
-      pdf2pdf.run
-        infile: @FilePath
-        outfile: @OutPath
-        cb_status: @processCallback.bind(this)
-      , @fileConverted.bind(this)
+
+      # TODO: Send e-mail that process is beginning.
+      # Move original PDF to proc location
+      @moveSourceFile (err) =>
+        if err
+          @Status = err.message
+          @save()
+          return
+        @Status = "Beginning conversion."
+        @save()
+        @App.info "Enrich: Init PDF2PDF."
+        pdf2pdf.run
+          infile: @FilePath
+          outfile: @OutPath
+          cb_status: @processCallback.bind(this)
+        , @fileConverted.bind(this)
     @
 
 
@@ -69,7 +74,7 @@ class Enrich
             type: "application/pdf"
             name: "converted.pdf"
           ]
-        , (err, msg) =>
+        , (err) =>
           if err
             @App.log "error", err.message, if err.stack then callstack:err.stack else null
 
@@ -128,12 +133,11 @@ class Enrich
   # Move source file to proc folder
   moveSourceFile: (callback) ->
     newPath = path.resolve(path.join(@App.cfg.ocr.store, @ID, "source.pdf"))
-    console.log newPath
     fsx.mkdirp(path.dirname(newPath), 0o777)
     # Copy file
-    if fs.existsSync(@FilePath) && fs.existsSync(newPath)
+    if fs.existsSync(@FilePath) && fs.existsSync(path.dirname(newPath))
       reader = fs.createReadStream(@FilePath)
-      reader.pipe(fs.createWriteStream(path.join))
+      reader.pipe(fs.createWriteStream(newPath))
       reader.on "end", (err) =>
         if fs.existsSync newPath
           fs.unlinkSync(@FilePath)

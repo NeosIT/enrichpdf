@@ -96,8 +96,8 @@ class Server
   # Create a new process
   createProcess: (fin, fout) ->
     pid = Enrich.generateUniqueID()
-    fout = path.join(@temp, pid + ".pdf") unless fout
-    @procs[pid] = (new Enrich(@, pid, path.resolve(fin), path.resolve(fout))).save().convert()
+    if fout then fout = path.resolve(fout)
+    @procs[pid] = (new Enrich(@, pid, path.resolve(fin), fout)).save().convert()
     return @procs[pid]
 
 

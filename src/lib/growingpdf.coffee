@@ -2,19 +2,19 @@ fs = require "fs"
 
 checkEOF = (fn, len, callback) ->
   process.nextTick ->
+    isEOF = false
     try
       fd = fs.openSync fn, "r"
       buf = new Buffer(10)
       fs.readSync fd, buf, 0, 10, len-10
       if buf.toString().match(/%%EOF/)
-        callback true
-      else
-        callback false
+        isEOF = true
     catch err
-      callback false
+      console.log err.stack
     finally
       if fd
         fs.closeSync fd
+      callback isEOF
       return
 
 
@@ -87,9 +87,4 @@ module.exports = (opts, cbf) ->
         setTimeout(checkFile, opts.checkstep * 1000)
     return
 
-
-    #if ctd >= 0
-    #  setTimeout(checkFile, 1000)
-
-  # Start
   checkFile()
