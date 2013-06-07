@@ -40,6 +40,7 @@ class Enrich
       @Error = err
       @App.log "error", err.message, if err.stack then callstack:err.stack else null
     else
+      @App.info "Enrich process #" + @ID + " completed successfully."
       @Done = true
       @Status = "Complete."
     @save()
@@ -81,7 +82,10 @@ class Enrich
     fs.writeFileSync path.join(@App.cfg.ocr.store, @ID) + ".json", @serialize(), encoding:"utf8", flag:"w"
     @
 
+
+  # Attempt to load process data from disk
   load: (callback) ->
+    @App.info "Attempting to load Enrich process #" + @ID
     if @ID && typeof callback == "function"
       fpath = path.join(@App.cfg.ocr.store, @ID) + ".json"
       fs.exists fpath, (ex) =>
@@ -106,6 +110,12 @@ class Enrich
       error: @Error
       original: @FilePath
       converted: @OutPath
+
+
+  # Set this process to cancelled.
+  cancel: ->
+    @App.info "Cancelling Enrich process #" + @ID
+    @Continue = false
 
 
   # Class method, generates a unique ID for the process.

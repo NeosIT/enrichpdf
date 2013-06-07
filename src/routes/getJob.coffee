@@ -1,8 +1,6 @@
 fs = require "fs"
 
 
-getIdFromPath = new RegExp "/job/(\\w+)"
-
 acceptPdf = (req) ->
   acc = req.get "Accept"
   if acc && acc.indexOf("application/pdf") > -1
@@ -12,7 +10,7 @@ acceptPdf = (req) ->
 
 
 module.exports = (request, response) ->
-  jid = getIdFromPath.exec request.path
+  jid = @getIdFromPath.exec request.path
 
   # If Job ID is given, look for it. Otherwise
   if jid

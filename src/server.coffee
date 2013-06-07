@@ -26,6 +26,7 @@ class Server
     @logger.add @logger.transports.DailyRotateFile,
       cfg.logging
     @temp = process.env["TMP"] || "/tmp"
+    @getIdFromPath = new RegExp "/job/(\\w+)"
     @info "EnrichPDF starting up..."
     @cfg = cfg
     @procs = {}
@@ -66,6 +67,7 @@ class Server
     @app.post "/job", @routes.createJob.bind(this)
     @app.get "/job", @routes.getJob.bind(this)
     @app.get "/job/*", @routes.getJob.bind(this)
+    @app.delete "/job/*", @routes.cancelJob.bind(this)
 
     # Setup directory watchers
     cfg.ocr.watchPaths.forEach (wpath) =>
@@ -95,12 +97,23 @@ class Server
   createProcess: (fin, fout) ->
     pid = Enrich.generateUniqueID()
     fout = path.join(@temp, pid + ".pdf") unless fout
-    (new Enrich(@, pid, path.resolve(fin), path.resolve(fout))).save().convert()
+    @procs[pid] = (new Enrich(@, pid, path.resolve(fin), path.resolve(fout))).save().convert()
+    return @procs[pid]
+
+
+  # Delete a process
+  deleteProcess: (pid) ->
+    if @procs[pid]
+      delete @procs[pid]
 
 
   # Get process by ID
   getProc: (eid, callback) ->
-    (new Enrich(@, eid)).load(callback)
+    if @procs[eid]
+      process.nextTick ->
+        callback null, @procs[eid]
+    else
+      (new Enrich(@, eid)).load(callback)
 
 
   # Send an email
@@ -120,6 +133,7 @@ class Server
   # Info log helper
   info: (msg) ->
     @log "info", msg
+
 
 
 new Server()
