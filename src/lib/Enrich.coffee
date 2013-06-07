@@ -10,6 +10,7 @@ class Enrich
     @Status = "Init"
     @Done = false
     @Error = false
+    @Continue = true
     @MailRecipients = []
 
 
@@ -72,6 +73,7 @@ class Enrich
     @App.info "Enrich process #" + @ID + " status: " + stat
     @Status = stat
     @save()
+    @Continue
 
 
   # Save this entity to file.
