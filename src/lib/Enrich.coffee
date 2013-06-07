@@ -2,6 +2,7 @@ fs = require "fs"
 pdf2pdf = require "pdf2pdf"
 path = require "path"
 growingpdf = require "./growingpdf"
+fsx = require "./filehelpers"
 
 
 class Enrich
@@ -19,6 +20,10 @@ class Enrich
     @Status = "Waiting for PDF."
     @save()
     growingpdf @FilePath, (err) =>
+      # Move original PDF to proc location
+
+
+      # TODO: Send e-mail that process is beginning.
       if err
         @Status = err.message
         @save()
@@ -79,7 +84,9 @@ class Enrich
 
   # Save this entity to file.
   save: ->
-    fs.writeFileSync path.join(@App.cfg.ocr.store, @ID) + ".json", @serialize(), encoding:"utf8", flag:"w"
+    if !fs.existsSync path.join(@App.cfg.ocr.store, @ID)
+      fs.mkdirSync path.join(@App.cfg.ocr.store, @ID)
+    fs.writeFileSync path.join(@App.cfg.ocr.store, @ID, "meta.json"), @serialize(), encoding:"utf8", flag:"w"
     @
 
 
@@ -87,7 +94,7 @@ class Enrich
   load: (callback) ->
     @App.info "Attempting to load Enrich process #" + @ID
     if @ID && typeof callback == "function"
-      fpath = path.join(@App.cfg.ocr.store, @ID) + ".json"
+      fpath = path.join(@App.cfg.ocr.store, @ID, "meta.json")
       fs.exists fpath, (ex) =>
         return callback(new Error("Does not exist!"), null) unless ex
         fs.readFile fpath, encoding:"utf8", (err, dta) =>
@@ -116,6 +123,27 @@ class Enrich
   cancel: ->
     @App.info "Cancelling Enrich process #" + @ID
     @Continue = false
+
+
+  # Move source file to proc folder
+  moveSourceFile: (callback) ->
+    newPath = path.resolve(path.join(@App.cfg.ocr.store, @ID, "source.pdf"))
+    console.log newPath
+    fsx.mkdirp(path.dirname(newPath), 0o777)
+    # Copy file
+    if fs.existsSync(@FilePath) && fs.existsSync(newPath)
+      reader = fs.createReadStream(@FilePath)
+      reader.pipe(fs.createWriteStream(path.join))
+      reader.on "end", (err) =>
+        if fs.existsSync newPath
+          fs.unlinkSync(@FilePath)
+          @FilePath = newPath
+          callback()
+        else
+          callback new Error "Something went wrong."
+    else
+      callback new Error("Something went wrong copying the source file.")
+
 
 
   # Class method, generates a unique ID for the process.
