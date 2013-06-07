@@ -5,7 +5,7 @@ module.exports = (request, response) ->
 
   if jid
     jid = jid[1]
-    @getProc jobId, (err, ep) ->
+    @getProc jid, (err, ep) ->
       if err
         response.writeHead 404
         response.end()

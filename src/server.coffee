@@ -110,7 +110,7 @@ class Server
   # Get process by ID
   getProc: (eid, callback) ->
     if @procs[eid]
-      process.nextTick ->
+      process.nextTick =>
         callback null, @procs[eid]
     else
       (new Enrich(@, eid)).load(callback)
