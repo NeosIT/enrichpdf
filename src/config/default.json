@@ -16,12 +16,12 @@
         "debug": true,
         "watchPaths": [
             {
-                "in": "../../watch",
-                "out": "../../out"
+                "in": "/var/EnrichPDF/in",
+                "out": "/var/EnrichPDF/out"
             },
             {
-                "in": "../../watch2",
-                "out": "../../out"
+                "in": "/var/EnrichPDF_private/in",
+                "out": "/var/EnrichPDF_private/out"
             }
         ]
     },
