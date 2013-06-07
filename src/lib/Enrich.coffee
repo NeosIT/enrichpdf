@@ -55,7 +55,7 @@ class Enrich
     for recip in @MailRecipients
       if /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i.test recip
         @App.sendMail
-          from: "laq@neos-it.de"
+          from: "enrichpdf@neos-it.de"
           to: recip
           subject: "Success e-mail baby yeah!"
           body: "This is the successfully converted PDF."
