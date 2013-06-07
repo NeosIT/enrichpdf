@@ -25,6 +25,7 @@ class Server
     @logger = require "winston"
     @logger.add @logger.transports.DailyRotateFile,
       cfg.logging
+    @temp = process.env["TMP"] || "/tmp"
     @info "EnrichPDF starting up..."
     @cfg = cfg
     @procs = {}
@@ -93,7 +94,7 @@ class Server
   # Create a new process
   createProcess: (fin, fout) ->
     pid = Enrich.generateUniqueID()
-    fout = path.join(process.env["TMP"], pid + ".pdf") unless fout
+    fout = path.join(@temp, pid + ".pdf") unless fout
     (new Enrich(@, pid, path.resolve(fin), path.resolve(fout))).save().convert()
 
 
