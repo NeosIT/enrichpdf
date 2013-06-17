@@ -70,13 +70,14 @@ class Server
     @app.delete "/job/*", @routes.cancelJob.bind(this)
 
     # Setup directory watchers
-    cfg.ocr.watchPaths.forEach (wpath) =>
-      watcher = chokidar.watch wpath.in, persistent: true
-      watcher.on "add", (filepath) =>
-        if path.extname(filepath) == ".pdf"
-          @info "File added: " + filepath
-          @createProcess filepath, path.join(wpath.out, path.basename(filepath))
-      @info "Watching path: " + path.resolve wpath.in
+    if cfg.ocr.watchPaths && cfg.ocr.watchPaths instanceof Array
+      cfg.ocr.watchPaths.forEach (wpath) =>
+        watcher = chokidar.watch wpath.in, persistent: true
+        watcher.on "add", (filepath) =>
+          if path.extname(filepath) == ".pdf"
+            @info "File added: " + filepath
+            @createProcess filepath, path.join(wpath.out, path.basename(filepath))
+        @info "Watching path: " + path.resolve wpath.in
 
     # Setup e-mail
     @email.smtp
