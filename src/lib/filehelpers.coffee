@@ -32,7 +32,7 @@ exports.mkdirp = mkdirp
 # Walk a directory and call a function on each element
 walk = (srcdir, callback) ->
   items = fs.readdirSync(srcdir)
-  mkdirp(fileInfo(srcdir).copypath)
+  mkdirp(fileInfo(srcdir).copypath, 0o777)
   for item in items
     fullpath = srcdir + "/" + item
     if item != "Thumbs.db"

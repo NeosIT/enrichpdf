@@ -24,8 +24,6 @@ src/*.js
 src/test.coffee
 src/*/*.js
 src/web/js/*.js
-util/*.js
-util/*/*.js
 
 # Ignore compiled stylus
 src/web/theme/*.css
