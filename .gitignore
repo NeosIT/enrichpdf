@@ -16,7 +16,6 @@ results
 build
 docs
 npm-debug.log
-node_modules
 src/procs
 
 # Ignore compiled coffeescript
@@ -31,3 +30,17 @@ src/web/theme/*.css
 # Ignore all configs except the default
 src/config/*.json
 !src/config/default.json
+
+# Modules
+node_modules/.bin
+node_modules/chokidar
+node_modules/coffee*
+node_modules/config
+node_modules/connect*
+node_modules/express
+node_modules/jade
+node_modules/nib
+node_modules/stylus
+node_modules/uglify*
+node_modules/vows
+node_modules/winston

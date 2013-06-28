@@ -1,0 +1,6 @@
+[submodule "node_modules/pdf2pdf"]
+	path = node_modules/pdf2pdf
+	url = git@git.neos-it.local:enrichpdf/pdf2pdf.git
+[submodule "node_modules/simplemail"]
+	path = node_modules/simplemail
+	url = git@git.neos-it.local:enrichpdf/simplemail.git
