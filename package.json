@@ -3,6 +3,7 @@
     "description": "Web API for EnrichPDF",
     "version": "0.0.1",
     "private": true,
+    "repository": "git@git.neos-it.local:enrichpdf/enrichpdf.git",
     "author": {
         "name": "Luke Andersen-Quest",
         "email": "luke.andersen.quest@gmail.com"
