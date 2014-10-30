@@ -1,3 +1,3 @@
 ## EnrichPDF
 
-Converts plain PDF files into searchable PDF files.
+A node.js application to convert plain PDF files into searchable PDF files.
