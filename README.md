@@ -1,3 +1,3 @@
-## Enrich Web-API
+## EnrichPDF
 
-A Web-API for EnrichPDF.
+Converts plain PDF files into searchable PDF files.
